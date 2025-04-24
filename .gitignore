@@ -1,1 +1,6 @@
 /data/
+*.zip
+*.h5
+*.pt
+*.wav
+*.mp4
