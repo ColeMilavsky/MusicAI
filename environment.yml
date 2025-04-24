@@ -1,0 +1,17 @@
+name: music-recommender
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - numpy
+  - pandas
+  - scikit-learn
+  - torch
+  - librosa
+  - matplotlib
+  - jupyterlab
+  - pip
+  - pip:
+      - tensorflow
+      - transformers

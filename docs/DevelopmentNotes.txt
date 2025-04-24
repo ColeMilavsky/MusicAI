@@ -1,0 +1,58 @@
+#################### CNN Initial Development ####################
+
+- Import data from GTZAN library for initial CNN testing
+    - Testing for increased accuracy and model fitting speeds
+    - Utilizing NVIDIA CUDA Toolkit and cuDNN library to activate GPU for model fitting
+        - cuDNN v8.6, CUDA v11.8 to work with tensorflow v12.3.0
+- Developed new system environment "tf-gnu" to use GPU for model generation
+
+- Model Structures:
+
+#################### Testing CNN Model #1 ####################
+
+    CNNmodel = Sequential([
+        # Input shape: (288, 432, 4) — match your resized image + RGBA
+        Conv2D(32, (3, 3), activation='relu', padding='same', input_shape=(288, 432, 4)),
+        BatchNormalization(),
+        MaxPooling2D(pool_size=(2, 2)),
+
+        Conv2D(64, (3, 3), activation='relu', padding='same'),
+        BatchNormalization(),
+        MaxPooling2D(pool_size=(2, 2)),
+
+        Conv2D(128, (3, 3), activation='relu', padding='same'),
+        BatchNormalization(),
+        MaxPooling2D(pool_size=(2, 2)),
+
+        Flatten(),
+
+        Dense(128, activation='relu'),
+        Dropout(0.5),
+
+        Dense(64, activation='relu'),
+        Dropout(0.3),
+
+        Dense(10, activation='softmax')
+    ])
+
+    CNNmodel.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+    callbacks = [
+        EarlyStopping(patience=5, restore_best_weights=True),   # Stops training when validation loss doesn't improve for 5 epochs
+        ReduceLROnPlateau(patience=3)   # If the model gets stuck lower learning rate to help escape plateaus
+    ]
+
+    # Fit the model to our data, save the accuracy and loss
+    CNNmodel.fit(
+        GTZAN_img_train,
+        GTZAN_ID_train,
+        epochs=30,
+        batch_size=32,
+        validation_split=0.1,
+        callbacks=callbacks,
+        verbose=2
+    )
+
+- Accuracy of only about .1 and 60 seconds to run an Epoch
+
+#################### Testing CNN Model #1 ####################
