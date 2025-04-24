@@ -4,11 +4,16 @@
     - Testing for increased accuracy and model fitting speeds
     - Utilizing NVIDIA CUDA Toolkit and cuDNN library to activate GPU for model fitting
         - cuDNN v8.6, CUDA v11.8 to work with tensorflow v12.3.0
+    - Created new file CNNTestingWAV.py to use wav to raw numerical mel-spectrogram arrays
 - Developed new system environment "tf-gnu" to use GPU for model generation
+
+- Data Inputs:
+    - Originally imported png spectrograms of GTZAN data
+    - Convert to using librosa for wav to raw numerical mel-spectrogram arrays
 
 - Model Structures:
 
-#################### Testing CNN Model #1 ####################
+#################### Testing CNN Model #1 : 4/23/2025 11:00 PM ####################
 
     CNNmodel = Sequential([
         # Input shape: (288, 432, 4) — match your resized image + RGBA

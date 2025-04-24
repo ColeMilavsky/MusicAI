@@ -1,8 +1,25 @@
-numpy>=1.24.0,<2.0
-pandas>=2.0,<3.0
-scikit-learn>=1.3.0,<2.0
-torch>=2.1.0
-librosa>=0.10.1
-matplotlib>=3.7.2
-jupyterlab>=4.0.5
+# Core scientific and plotting stack
+numpy>=1.23.0
+pandas
+matplotlib
+Pillow
+pathlib
+glob2
+
+# Audio processing
+librosa>=0.10.0
+soundfile
+
+# Machine learning
+scikit-learn
+
+# Deep learning (TensorFlow + Keras)
 tensorflow==2.13.0
+keras==2.13.1
+
+# Optional (used internally by librosa/soundfile)
+numba
+audioread
+# Install via: conda install -c conda-forge ffmpeg
+# OR (if using pip): pip install imageio[ffmpeg]
+imageio[ffmpeg]

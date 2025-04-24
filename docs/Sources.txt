@@ -1,0 +1,7 @@
+1:  notebooks/modelTests/CNNTestingPNG.py lines 81 - 96
+        - CNNModel used from EsratMaria's Github page
+        - https://github.com/EsratMaria/MusicGenreRecogniton/blob/master/GenreClassificationWithCNN-LSTM.ipynb
+
+2:  notebooks/modelTests/CNNTestingWAV.py
+        - Data input and CNNModel used from EsratMaria's Github page
+        - https://github.com/EsratMaria/MusicGenreRecogniton/blob/master/GenreClassificationWithCNN-LSTM.ipynb
