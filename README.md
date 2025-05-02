@@ -4,6 +4,7 @@
 
 ### Purpose
 This project is meant as an expansion of current Spotify AI recommendation capabilities. As of now, Spotify does not offer an advanced, promptable song recommendation system powered by modern machine learning principles. Instead, Spotify relies primarily on collaborative filtering, which works by cross-referencing various users’ listening histories to suggest tracks. While this approach is successful at discovering popular or behaviorally similar content, it falls short in several important respects, including adapting to particular niches, handling limited listening histories, and providing reasoning behind recommendations.
+
 By integrating a machine learning-based recommendation system, this project aims at avoiding the limitations in Spotify's current algorithm. This involves training models to understand audio features (like tempo, key, mood, timbre, genre) through learning of metadata and WAV file mel-spectrograms. This system provides a much more advanced and flexible understanding of what users enjoy about their music
 
 ### Original Design Concepts
