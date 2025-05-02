@@ -15,5 +15,6 @@ setup(
         "keras",
         "os",
         "PyQt6",
+        "spotipy",
     ],
 )

@@ -1,3 +1,5 @@
+import sys
+
 import warnings
 warnings.filterwarnings('ignore')
 import pandas as pd
@@ -23,8 +25,8 @@ import tensorflow as tf
 
 import keras
 from keras import backend
-from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization, Lambda, LSTM, Reshape
+from keras.models import Sequential, Model
+from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization, Lambda, LSTM, Reshape, Input
 from keras.utils import to_categorical
 from keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from keras.regularizers import l2
@@ -37,6 +39,7 @@ def main(args):
 if __name__ == '__main__':
 
     GTZAN_WAV_data = f'data/input/GTZAN/genres_original'
+    model_path = f'models'
 
     # Array of genres
     # genres = [f for f in os.listdir(GTZAN_WAV_data) if os.path.isdir(os.path.join(GTZAN_WAV_data, f))]
@@ -84,24 +87,40 @@ if __name__ == '__main__':
     Y_test = np.array(keras.utils.to_categorical(Y_test, 10))
 
     #####################################################################################################################################
-    ### Create new CNN model ############################################################################################################
+    ### Create Functional CNN model ############################################################################################################
+    #####################################################################################################################################    
+    inputs = Input(shape=(64, 173, 1))
+    x = Conv2D(20, (5, 5), activation="relu")(inputs)
+    x = MaxPooling2D((2, 2))(x)
+    x = Conv2D(50, (5, 5))(x)
+    x = MaxPooling2D((2, 2))(x)
+    x = Flatten()(x)
+    x = Dense(20, activation="relu")(x)
+    x = Lambda(lambda x: tf.expand_dims(x, axis=-1))(x)
+    x = LSTM(512)(x)
+    outputs = Dense(10, activation="softmax")(x)
+
+    CNNmodel = Model(inputs=inputs, outputs=outputs)
+
     #####################################################################################################################################
-    CNNmodel = Sequential()
+    ### Create Sequential CNN model #####################################################################################################
+    #####################################################################################################################################
+    # CNNmodel = Sequential()
 
-    CNNmodel.add(Conv2D(20, (5, 5), input_shape=(64, 173, 1), activation="relu", strides=1, padding="valid"))
-    CNNmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    # CNNmodel.add(Conv2D(20, (5, 5), input_shape=(64, 173, 1), activation="relu", strides=1, padding="valid"))
+    # CNNmodel.add(MaxPooling2D(pool_size=(2, 2)))
 
-    CNNmodel.add(Conv2D(50, (5, 5), use_bias=50))
-    CNNmodel.add(MaxPooling2D(pool_size=(2, 2)))
+    # CNNmodel.add(Conv2D(50, (5, 5), use_bias=50))
+    # CNNmodel.add(MaxPooling2D(pool_size=(2, 2)))
 
-    CNNmodel.add(Flatten())
+    # CNNmodel.add(Flatten())
                  
-    CNNmodel.add(Dense(20, activation="relu"))
-    CNNmodel.add(Lambda(lambda x: backend.expand_dims(x, axis=-1)))
+    # CNNmodel.add(Dense(20, activation="relu"))
+    # CNNmodel.add(Lambda(lambda x: tf.expand_dims(x, axis=-1)))
 
-    CNNmodel.add(LSTM(512, activation="relu", return_sequences=False))
+    # CNNmodel.add(LSTM(512, activation="relu", return_sequences=False))
 
-    CNNmodel.add(Dense(10, activation = "softmax"))
+    # CNNmodel.add(Dense(10, activation = "softmax"))
     ######################################################################################################################################
 
     CNNmodel.summary()
@@ -126,7 +145,10 @@ if __name__ == '__main__':
         verbose=2
     )
 
+    CNNmodel.save(model_path + '/GTZAN_genre_model.keras')
+
     ######################################## Analyze Model Performance ##############################################
+    
     
 
     sys.exit(main(sys.argv))

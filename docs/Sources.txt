@@ -5,3 +5,19 @@
 2:  notebooks/modelTests/CNNTestingWAV.py
         - Data input and CNNModel used from EsratMaria's Github page
         - https://github.com/EsratMaria/MusicGenreRecogniton/blob/master/GenreClassificationWithCNN-LSTM.ipynb
+
+3:  notebooks/miscFunctions/GPUtest.py
+        - GPU implementation, using numba
+                - Explanation of using threads and GPU functions
+                - https://numba.pydata.org/numba-doc/dev/cuda/kernels.html
+                - Intro to numba and when to use it
+                - https://numba.readthedocs.io/en/stable/user/5minguide.html#will-numba-work-for-my-code
+        - GPU Structure
+                - Thread and GPU structure interacting with program
+                - https://docs.nvidia.com/cuda/cuda-c-programming-guide/
+
+4:  Misc
+        - General research on deep learning for music reccomendation
+        - https://sander.ai/2014/08/05/spotify-cnns.html
+        - PyQt6 UI tutorial
+        - https://www.pythonguis.com/pyqt6-tutorial/
