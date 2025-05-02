@@ -3,14 +3,18 @@
 ## Design Overview
 
 ### Purpose
-Briefly describe the purpose of your project.  
-*Example:* This project implements a [type of system or device] to address [problem or goal].
+This project is meant as an expansion of current Spotify AI recommendation capabilities. As of now, Spotify does not offer an advanced, promptable song recommendation system powered by modern machine learning principles. Instead, Spotify relies primarily on collaborative filtering, which works by cross-referencing various users’ listening histories to suggest tracks[1]. While this approach is successful at discovering popular or behaviorally similar content, it falls short in several important respects, including adapting to particular niches, handling limited listening histories, and providing reasoning behind recommendations.
+
+By integrating a machine learning-based recommendation system, this project aims at avoiding the limitations in Spotify's current algorithm. This involves training models to understand audio features (like tempo, key, mood, timbre, genre) through learning of metadata and WAV file mel-spectrograms. This system provides a much more advanced and flexible understanding of what users enjoy about their music
 
 ### Original Design Concepts
-List the design concepts you initially considered:
-- Concept 1 → brief description
-- Concept 2 → brief description
-- Concept 3 → brief description
+Concept 1: AI Spotify Recommendation Software
+
+The intial idea for this project was a fully Spotify based software for song recommendation, playlist creation, etc. that could be prompted by track inputs, keywords, and more. The project does still contain a lot of this functionality, but certain capabilities had to be reduced, altered, or even expanded upon due to Spotify's recent alterations to its Web API. In the past, insightful features like tempo, timbre, and loudness as well as 30 second audio snippets could be extracted for analysis, but due to licensing agreements these features were removed. While the intial concept for a multi-input WAV mel-spectrogram CNN-LTSM and track feature random forest based model couldn't be implemented due to Spotify's removal of those two key aspects of their API, new concepts for recommendation and analysis models of music were developed.
+
+Concept 2:
+
+Since Spotify no longer provides appropriate data for this project's purposes, the goal needed to be shifted. Instead of making a Spotify based software application, this project is focused on a wholistic development of machine learning as a means music recommendation and analysis. 
 
 ### Final Design
 Describe the final design you selected and explain why:
@@ -23,8 +27,7 @@ Explain how your project expands on prior work:
 - Justify why this is appropriate as a 6-week project
 
 **References**
-- [Author, Title, Year]
-- [Link or citation]
+[1] https://sander.ai/2014/08/05/spotify-cnns.html
 
 **Images/Schematics**
 - ![System Diagram](path/to/diagram.png)
