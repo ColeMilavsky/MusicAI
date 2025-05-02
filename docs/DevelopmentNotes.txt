@@ -11,6 +11,10 @@
     - Originally imported png spectrograms of GTZAN data
     - Convert to using librosa for wav to raw numerical mel-spectrogram arrays
 
+- Spotify Web API:
+    - Spotify no longer allows access to critical data like track features and 30 second URL previews to tracks
+    - Pivot project towards multi-facited music software with recommendation based on Spotify metadata
+
 - Model Structures:
 
 #################### Testing CNN Model #1 : 4/23/2025 11:00 PM ####################

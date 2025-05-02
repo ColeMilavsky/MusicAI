@@ -1,7 +1,6 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import numpy as np
-import requests
 import os
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics.pairwise import cosine_similarity
@@ -24,24 +23,20 @@ def get_track_metadata(track, artist_data):
         album_release_year
     ]), genres
 
-def runAPIRec():
+def runAPIRec(ref_track_name):
     # Run client identification
     sp_public = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
         client_id='b7e9d6b4921e43659c467e32d013784d',
         client_secret='7c67c6b32d7443908ffcf9f7d1739d38'
     ))
 
-    # User interaction section
-    ref_track_name = input("Enter a reference song name: ")
     results = sp_public.search(q=ref_track_name, type='track', limit=1)
     if not results['tracks']['items']:
-        print("No reference track found.")
         exit()
 
     # Get metadata from user chosen track
     ref_track = results['tracks']['items'][0]
     ref_vector, ref_genres = get_track_metadata(ref_track, artist_data={ref_track['artists'][0]['id']: sp_public.artist(ref_track['artists'][0]['id'])})
-    print(f"Reference track: {ref_track['name']} by {ref_track['artists'][0]['name']}")
 
     # Create a 10 year range of potential tracks to compare
     release_year_str = ref_track['album']['release_date'][:4]
@@ -72,7 +67,6 @@ def runAPIRec():
     # Randomly select 3 genres from the full list and append genres of reference song
     sampled_genres = random.sample(all_genres, 2)
     combined_genres = list(set(sampled_genres) | ref_genres)
-    print(f"Selected sampled genres: {combined_genres}")
 
     # Compile vector of "candidates", or other tracks, to compare metadata
     candidates = []
@@ -83,16 +77,13 @@ def runAPIRec():
             random_genre = random.choice(combined_genres)
 
             query = f'year:{year} genre:"{random_genre}"'
-            try:
-                year_tracks = sp_public.search(q=query, type='track', limit=5, offset=random_offset)['tracks']['items']
-                if not year_tracks:
-                    # If not enough songs in a certain genre just use year as query
-                    fallback_query = f'year:{year}'
-                    print(f"No tracks found for {query}, falling back to {fallback_query}")
-                    tracks = sp_public.search(q=fallback_query, type='track', limit=4, offset=random_offset)['tracks']['items']
-                candidates.extend(year_tracks)
-            except Exception as e:
-                print(f"Failed to fetch tracks for {year} {random_genre}: {e}")
+            year_tracks = sp_public.search(q=query, type='track', limit=5, offset=random_offset)['tracks']['items']
+            if not year_tracks:
+                # If not enough songs in a certain genre just use year as query
+                fallback_query = f'year:{year}'
+                tracks = sp_public.search(q=fallback_query, type='track', limit=4, offset=random_offset)['tracks']['items']
+            candidates.extend(year_tracks)
+
 
     # Collect unique artist IDs and generate batches to compare user chosen track with
     artist_ids = list(set([track['artists'][0]['id'] for track in candidates]))
@@ -105,13 +96,10 @@ def runAPIRec():
     # Collect candidate metadata
     candidate_data = []
     for track in candidates:
-        try:
-            vec, genres = get_track_metadata(track, artist_data)
-            genre_overlap = len(ref_genres & genres)
-            vec = np.append(vec, genre_overlap)
-            candidate_data.append((track, vec))
-        except Exception as e:
-            print(f"Skipping {track['name']} due to error: {e}")
+        vec, genres = get_track_metadata(track, artist_data)
+        genre_overlap = len(ref_genres & genres)
+        vec = np.append(vec, genre_overlap)
+        candidate_data.append((track, vec))
 
     # Prepare reference and candidate tracks for comparison
     ref_vector = np.append(ref_vector, 0)
@@ -170,5 +158,4 @@ def runAPIRec():
         preview_url = track['preview_url']
         spotify_link = track['external_urls']['spotify']
         print(f"\n{i+1}. {name} by {artist}")
-        print(f"Euclidean: {euc:.4f}, Cosine: {cos:.4f}, Combined: {comb:.4f}")
         print(f"Spotify Link: {spotify_link}")
