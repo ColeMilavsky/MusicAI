@@ -1,4 +1,4 @@
-![GenreClassifierAccuracy](https://github.com/user-attachments/assets/687e3927-b7fc-4df4-a8b2-9825910b1d17)# MusicAI
+# MusicAI
 
 ## Design Overview
 
