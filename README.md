@@ -77,9 +77,6 @@ When dealing with large datasets like GTZAN or APIs there is often issues import
 ### Unsuccessful Attempts
 A great amount of effort was put into implementing GPU instruction execution to speed up training; however after many unsuccessful attempts to use CUDA with the cuDNN library[6] GPU use was deemed unnecessary. CUDA helps the GPU understand python instructions, but likely due to version mismatches CUDA was unable to identify a GPU.
 
-**Video Demonstrations**
-- [YouTube or Canvas video link](https://your-video-link)
-
 ---
 
 ## Summary, Conclusions, and Future Work
