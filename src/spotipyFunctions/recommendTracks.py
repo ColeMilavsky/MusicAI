@@ -1,6 +1,7 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import numpy as np
+import sys
 import os
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics.pairwise import cosine_similarity
@@ -23,7 +24,7 @@ def get_track_metadata(track, artist_data):
         album_release_year
     ]), genres
 
-def runAPIRec(ref_track_name):
+def runAPIRec(ref_track_name, sim_score):
     # Run client identification
     sp_public = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
         client_id='b7e9d6b4921e43659c467e32d013784d',
@@ -37,6 +38,7 @@ def runAPIRec(ref_track_name):
     # Get metadata from user chosen track
     ref_track = results['tracks']['items'][0]
     ref_vector, ref_genres = get_track_metadata(ref_track, artist_data={ref_track['artists'][0]['id']: sp_public.artist(ref_track['artists'][0]['id'])})
+    print(f"Recommendations for reference track: {ref_track['name']} by {ref_track['artists'][0]['name']}\n")
 
     # Create a 10 year range of potential tracks to compare
     release_year_str = ref_track['album']['release_date'][:4]
@@ -64,16 +66,32 @@ def runAPIRec(ref_track_name):
         'trip-hop', 'turkish', 'work-out', 'world-music'
     ]
 
-    # Randomly select 3 genres from the full list and append genres of reference song
-    sampled_genres = random.sample(all_genres, 2)
+    possible_sim_scores = [5, 4, 3, 2, 1, 0]
+
+    # Find index based on sim_score once
+    if sim_score in possible_sim_scores:
+        index = possible_sim_scores.index(sim_score)
+    else:
+        print("Invalid similarity score provided!")
+        sys.exit()
+
+    if not ref_genres:
+        ref_genres = {'pop'}
+
+    # Randomly select genres, more random genres selected with a lower similarity score
+    sampled_genres = random.sample(all_genres, index)
     combined_genres = list(set(sampled_genres) | ref_genres)
 
     # Compile vector of "candidates", or other tracks, to compare metadata
     candidates = []
     for year in years:
         for _ in range(5):
-            # Implement some randomness to candidates pulled
-            random_offset = random.randint(0, 500)
+            # Take less and less popular candidates as similarity score decreases
+            if sim_score == 5:
+                random_offset = random.randint(0, 50)
+            else:
+                random_offset = random.randint(0, index * 100)
+
             random_genre = random.choice(combined_genres)
 
             query = f'year:{year} genre:"{random_genre}"'
@@ -135,17 +153,26 @@ def runAPIRec(ref_track_name):
     # Sort candidates by combined euclidean and cosine scores
     candidate_scores.sort(key=lambda x: x[3])
 
-    # Remove duplicates
-    seen = set()
-    unique_scores = []
+    # # Remove duplicates
+    # seen = set()
+    # unique_scores = []
+    # for track, euc, cos, comb in candidate_scores:
+    #     key = (track['name'].lower(), track['artists'][0]['name'].lower())
+    #     if key not in seen:
+    #         unique_scores.append((track, euc, cos, comb))
+    #         seen.add(key)
+
+    # Only recommend one song from a particular artist
+    seen_artists = set()
+    unique_results = []
     for track, euc, cos, comb in candidate_scores:
-        key = (track['name'].lower(), track['artists'][0]['name'].lower())
-        if key not in seen:
-            unique_scores.append((track, euc, cos, comb))
-            seen.add(key)
+        artist_name = track['artists'][0]['name']
+        if artist_name.lower() not in seen_artists:
+            unique_results.append((track, euc, cos, comb))
+            seen_artists.add(artist_name.lower())
 
     # Shuffle top candidates for more variety across runs
-    top_results = unique_scores[:10]
+    top_results = unique_results[:10]
     random.shuffle(top_results)
 
     # Path to previews for audio URLs
@@ -155,7 +182,9 @@ def runAPIRec(ref_track_name):
     for i, (track, euc, cos, comb) in enumerate(top_results[:5]):
         name = track['name']
         artist = track['artists'][0]['name']
-        preview_url = track['preview_url']
         spotify_link = track['external_urls']['spotify']
-        print(f"\n{i+1}. {name} by {artist}")
-        print(f"Spotify Link: {spotify_link}")
+
+        print(f"<b>{i+1}. {name} by {artist}</b><br>")
+        print(f"<a href='{spotify_link}'>Listen on Spotify</a><br><br>")
+        #print(f"\n{i+1}. {name} by {artist}")
+        #print(f"Spotify Link: {spotify_link}")

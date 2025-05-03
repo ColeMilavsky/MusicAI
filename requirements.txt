@@ -1,25 +1,28 @@
-# Core scientific and plotting stack
-numpy>=1.23.0
-pandas
-matplotlib
-Pillow
-pathlib
-glob2
+# Math and plotting
+numpy==2.1.3
+pandas==2.2.3
+matplotlib==3.10.1
+Pillow==11.2.1
 
 # Audio processing
-librosa>=0.10.0
-soundfile
+librosa==0.11.0
+soundfile==0.13.1
+audioread==3.0.1
+numba==0.61.0
+soxr==0.5.0.post1
 
 # Machine learning
-scikit-learn
+scikit-learn==1.6.1
+scipy==1.15.2
+joblib==1.4.2
+tensorflow==2.19.0
+keras==3.9.2
 
-# Deep learning (TensorFlow + Keras)
-tensorflow==2.13.0
-keras==2.13.1
+# PyQt6 UI
+PyQt6==6.9.0
 
-# Optional (used internally by librosa/soundfile)
-numba
-audioread
-# Install via: conda install -c conda-forge ffmpeg
-# OR (if using pip): pip install imageio[ffmpeg]
-imageio[ffmpeg]
+# Spotify API
+spotipy==2.25.1
+requests==2.32.3
+requests-oauthlib==2.0.0
+oauthlib==3.2.2
