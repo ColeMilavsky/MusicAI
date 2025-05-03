@@ -1,4 +1,4 @@
-# MusicAI
+![GenreClassifierAccuracy](https://github.com/user-attachments/assets/687e3927-b7fc-4df4-a8b2-9825910b1d17)# MusicAI
 
 ## Design Overview
 
@@ -12,14 +12,16 @@ Concept 1: AI Spotify Recommendation Software
 
 The intial idea for this project was a fully Spotify based software for song recommendation, playlist creation, etc. that could be prompted by track inputs, keywords, and more. The project does still contain a lot of this functionality, but certain capabilities had to be reduced, altered, or even expanded upon due to Spotify's recent alterations to its Web API. In the past, insightful features like tempo, timbre, and loudness as well as 30 second audio snippets could be extracted for analysis, but due to licensing agreements these features were removed. While the intial concept for a multi-input WAV mel-spectrogram CNN-LTSM and track feature random forest based model couldn't be implemented due to Spotify's removal of those two key aspects of their API, new concepts for recommendation and analysis models of music were developed.
 
-Concept 2: Multifacited Music Software
+Final Design: Multifacited Music Software
 
-Since Spotify no longer provides appropriate data for this project's purposes, the goal needed to be shifted. Instead of making a Spotify based software application, this project is focused on a wholistic development of machine learning as a means music recommendation and analysis. 
+Since Spotify no longer provides appropriate data for this project's purposes, the goal needed to be shifted. Instead of making a Spotify based software application, this project is focused on a wholistic development of machine learning as a means music recommendation and analysis. Ultimately there are two main apps inside this software
 
-### Final Design
-Describe the final design you selected and explain why:
-- What was chosen and why it was selected over other options?
-- What trade-offs or constraints influenced your choice?
+The first is a Spotify API song recommender. It works through a nearest neighbor approach, comparing euclidean and cosine distances between important metadata like popularity and genre between tracks. The app allows for adjustment of a "Similarity Score"; this allows the user to customize just how similar they want their recommendations to be to their inputted track. This was achieved by allowing comparison between less popular songs, as well fewer restrictions on comparison cross genres for lower similarity scores as compared to higher ones.
+
+The second app is a WAV audio file analysis application. Through extensive CNN-LTSM training, this project generated models to provide insight on genre and feature information of an audio file. 
+
+![GenreClassifierAccuracy](https://github.com/user-attachments/assets/b00d3cd9-ef9d-42a7-81ef-4fd1f83dbe28)
+
 
 ### Building on Previous Work
 Explain how your project expands on prior work:
