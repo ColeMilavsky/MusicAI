@@ -1,8 +1,10 @@
 import sys
+import os
 import PyQt6.QtWidgets as wgt
 from PyQt6.QtGui import QAction
 from PyQt6.QtCore import QThread, pyqtSignal, Qt
 from src.spotipyFunctions import recommendTracks
+from src.GTZANModelAnalysis.songAnalysisPipeline import run_song_analysis
 import io
 import contextlib
 
@@ -20,6 +22,24 @@ class SongRec(QThread):
         buffer = io.StringIO()
         with contextlib.redirect_stdout(buffer):
             recommendTracks.runAPIRec(self.song_name, self.sim_score)
+        output = buffer.getvalue()
+        self.update_output.emit(output)
+
+# runs song analysis
+class SongAnalysisWorker(QThread):
+    update_output = pyqtSignal(str)
+
+    def __init__(self, file_path):
+        super().__init__()
+        self.file_path = file_path
+
+    def run(self):
+        import io
+        import contextlib
+
+        buffer = io.StringIO()
+        with contextlib.redirect_stdout(buffer):
+            run_song_analysis(self.file_path)
         output = buffer.getvalue()
         self.update_output.emit(output)
 
@@ -106,6 +126,11 @@ class MainWindow(wgt.QMainWindow):
         rec_action.triggered.connect(self.show_song_rec_page)
         app_menu.addAction(rec_action)
 
+        # Add "Song Analysis" action
+        analysis_action = QAction("Song Analysis", self)
+        analysis_action.triggered.connect(self.show_song_analysis_page)
+        app_menu.addAction(analysis_action)
+
         # Add "Help" menu
         help_menu = menubar.addMenu("Help")
 
@@ -156,3 +181,46 @@ class MainWindow(wgt.QMainWindow):
     def display_output(self, text):
         for line in text.splitlines():
             self.output_box.append(line)
+
+    def show_song_analysis_page(self):
+        # Clear current page content
+        for i in reversed(range(self.layout.count())):
+            self.layout.itemAt(i).widget().setParent(None)
+
+        # File input section
+        self.file_input = wgt.QLineEdit()
+        self.file_input.setPlaceholderText("Enter path to .wav file or click Browse")
+
+        self.browse_button = wgt.QPushButton("Browse")
+        self.browse_button.clicked.connect(self.browse_file)
+
+        # Run button and output
+        self.analyze_button = wgt.QPushButton("Analyze Song")
+        self.output_box = wgt.QTextBrowser()
+        self.output_box.setReadOnly(True)
+
+        # Add widgets to layout
+        self.layout.addWidget(self.file_input)
+        self.layout.addWidget(self.browse_button)
+        self.layout.addWidget(self.analyze_button)
+        self.layout.addWidget(self.output_box)
+
+        # Connect analyze button
+        self.analyze_button.clicked.connect(self.run_song_analysis)
+
+    def browse_file(self):
+        file_dialog = wgt.QFileDialog()
+        file_path, _ = file_dialog.getOpenFileName(self, "Select WAV file", "", "Audio Files (*.wav)")
+        if file_path:
+            self.file_input.setText(file_path)
+
+    def run_song_analysis(self):
+        file_path = self.file_input.text()
+        if not file_path or not os.path.isfile(file_path):
+            self.output_box.append("Please provide a valid .wav file path.\n")
+            return
+
+        self.output_box.append(f"Analyzing {file_path}...\n")
+        self.worker = SongAnalysisWorker(file_path)
+        self.worker.update_output.connect(self.display_output)
+        self.worker.start()
