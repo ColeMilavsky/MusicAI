@@ -5,7 +5,7 @@
 ### Purpose
 This project is meant as an expansion of current Spotify AI recommendation capabilities. As of now, Spotify does not offer an advanced, configurable song recommendation system powered by modern machine learning principles. Instead, Spotify relies primarily on collaborative filtering, which works by cross-referencing various users’ listening histories to suggest tracks[1]. While this approach is successful at discovering popular or behaviorally similar content, it falls short in several important respects, including adapting to particular niches, handling limited listening histories, and providing reasoning behind recommendations.
 
-By integrating a nearest neighbor recommendation system, this project aims at avoiding the limitations in Spotify's current algorithm. Furthermore, it contains greater functionality for music analysis, by training models to understand audio features (like tempo, key, mood, timbre, genre) through random-forest metadata and CNN-LTSM WAV file mel-spectrograms. This software features various capabilities from recommendation programs to audio anaylsis.
+By integrating a nearest neighbor recommendation system, this project aims at avoiding the limitations in Spotify's current algorithm. Furthermore, it contains greater functionality for music analysis, by training models to understand audio features (like tempo, key, mood, timbre, genre) through CNN-LTSM trained on WAV file mel-spectrograms. This software features various capabilities from recommendation programs to audio anaylsis.
 
 ### Original Design Concepts
 Concept 1: AI Spotify Recommendation Software
@@ -18,31 +18,23 @@ Since Spotify no longer provides appropriate data for this project's purposes, t
 
 The first is a Spotify API song recommender. It works through a nearest neighbor approach, comparing euclidean and cosine distances between important metadata like popularity and genre between tracks. The app allows for adjustment of a "Similarity Score"; this allows the user to customize just how similar they want their recommendations to be to their inputted track. This was achieved by allowing comparison between less popular songs, as well fewer restrictions on comparison cross genres for lower similarity scores as compared to higher ones.
 
-The second app is a WAV audio file analysis application. Through extensive CNN-LTSM training, this project generated models to provide insight on genre and feature information of an audio file. 
+The second app is a WAV audio file analysis application. Through extensive CNN-LTSM training, this project generated models to provide insight on genre and feature information of an audio file. It uses an ensemble approach to combine a categorical genre classifier and linear metadata predicter. Ultimately, the user's able to input their own audio files to get insightful information they may have not been able to identify themselves.
 
 ![GenreClassifierAccuracy](https://github.com/user-attachments/assets/b00d3cd9-ef9d-42a7-81ef-4fd1f83dbe28)
+![GenreClassifierLoss](https://github.com/user-attachments/assets/2f921dcd-3e57-46fd-b8c8-51743e35496e)
 
 
-### Building on Previous Work
-Explain how your project expands on prior work:
-- Reference past projects, papers, or tools you built upon
-- Justify why this is appropriate as a 6-week project
+### Knowledge Required for Project
+A prior knowledge of machine learning structures like CNN and nearest neighbors was necessary in the development of this project. It also required a baseline understanding of how machines interpret and learn from data. Computer's are reliant on the information provided to them and cannot infer about new, previously never seen, information. In other words, the data used to train the models must also be available at the time of running the software for the user. Considering the legal issue of accessing audio files in mass, it was difficult for the models to be trained on relevant, popular music. For this reason, the GTZAN genre classification dataset was used for the training of the CNN-LTSMs[2]. This dataset was essential in providing the models enough information to properly learn to interpret audio WAV files. Furthermore, thank you to EsratMaria's MusicGenreRecognition[3] github for some inspiration for the model structure.
 
-**References**
-[1] https://sander.ai/2014/08/05/spotify-cnns.html
-
-**Images/Schematics**
-- ![System Diagram](path/to/diagram.png)
-- ![Schematic](path/to/schematic.png)
+Additionally, the development of the UI was done through the PyQt6 library. Having never developed UI before, the process was somewhat tedious but overall a fantastic learning experience. For access to both the applications, please click the "apps" button in the top left, then select an app of your choosing.
 
 ---
 
 ## Preliminary Design Verification
 
 ### Verification Summary
-Describe how you tested early versions or prototypes:
-- Breadboards, simulation tools, test programs, etc.
-- How you evaluated feasibility and made early design decisions
+The first step in development was a compilation and analysis of data to get a greater understanding of the possibilities for machine learning in music analysis.
 
 ### Test Plan and Procedures
 - Describe how you tested subsystems or critical components
@@ -51,10 +43,6 @@ Describe how you tested early versions or prototypes:
 ### Outcomes
 - Successful tests and results
 - Unsuccessful tests and lessons learned
-
-**Prototype Photos**
-- ![Prototype Photo](path/to/photo.png)
-- ![Test Result Photo](path/to/photo.png)
 
 ---
 
@@ -65,9 +53,6 @@ Describe how you tested early versions or prototypes:
 - Describe major hardware/software modules and how they interact
 
 ### Relevant Subcomponents
-- **Hardware**
-  - Component 1 → description
-  - Component 2 → description
 - **Software**
   - Module 1 → description
   - Module 2 → description
@@ -119,3 +104,8 @@ Describe how you tested early versions or prototypes:
 - Describe improvements, changes, or next steps you would take if you iterated on the design again
 
 ---
+
+**References**
+[1] https://sander.ai/2014/08/05/spotify-cnns.html
+[2] https://www.kaggle.com/datasets/andradaolteanu/gtzan-dataset-music-genre-classification
+[3] https://github.com/EsratMaria/MusicGenreRecogniton/blob/master/GenreClassificationWithCNN-LSTM.ipynb
