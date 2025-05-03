@@ -120,7 +120,7 @@ if __name__ == '__main__':
         validation_data= (X_test, Y_test),
         validation_split=0.1,
         callbacks=callbacks,
-        verbose=2
+        verbose=1
     )
 
     CNNmodel.save(model_path + '/GTZANGenreClassifier.keras')
